@@ -57,7 +57,7 @@ func TestLosing(t *testing.T) {
 
 func TestSimulatingOneMatch(t *testing.T) {
 	input := "A X" 
-	want := 4
+	want := 3
 	output := simulateMatches(input)
 	if want != output {
 		t.Fatalf(`Input %s should return score "%v" but instead returned "%v"`, input, want, output);
@@ -65,7 +65,7 @@ func TestSimulatingOneMatch(t *testing.T) {
 }
 func TestSimulatingMoreMatch(t *testing.T) {
 	input := "A Y\nB X\nC Z" 
-	want := 15
+	want := 12
 	output := simulateMatches(input)
 	if want != output {
 		t.Fatalf(`Input %s should return score "%v" but instead returned "%v"`, input, want, output);

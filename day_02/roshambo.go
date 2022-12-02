@@ -17,6 +17,17 @@ var scoreMap = map[string]int{
 	"Y":     2,
 	"Z":     3,
 }
+
+var loseMap = map[string]string{
+	"A":	"Z",
+	"B":	"X",
+	"C":	"Y",
+}
+var winMap = map[string]string{
+	"A":	"Y",
+	"B":	"Z",
+	"C":	"X",
+}
 func readInput() string {
 	var filename string
 	if len(os.Args) < 2 {
@@ -40,7 +51,19 @@ func simulateMatches(data string) (score int) {
 	matches := strings.Split(data, "\n")
 	scorer := matchWinScore()
 	for _, match := range matches {
-		score = scorer(scoreMap[string(match[0])], scoreMap[string(match[2])])
+		opponentsHand := string(match[0])
+		//lose, draw, win
+		outcome := string(match[2]);
+		var myThrow string;
+		switch outcome{
+		case "X":
+			myThrow = loseMap[opponentsHand]
+		case "Y":
+			myThrow = opponentsHand
+		case "Z": 
+			myThrow = winMap[opponentsHand]
+		}
+		score = scorer(scoreMap[opponentsHand], scoreMap[myThrow])
 	}
 
 	return
