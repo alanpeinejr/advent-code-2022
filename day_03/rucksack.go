@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	fmt.Println(rummageRucksack(readInput()))
+	//part 1
+	//fmt.Println(rummageRucksack(readInput()))
+	//part 2
+	fmt.Println(findBadges(readInput()))
 }
 //priority is lowercase first, annoyingly opposite of asci, 0 becaue score starts at 1
 const scoreString = "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -57,4 +60,33 @@ func getPriority() func(typeChar string) int {
 		score+= indexScore
 		return score
 	}
+}
+
+func findBadgeType(sacks []string) string{
+	if(3 != len(sacks)){
+		panic("whoops, not 3 sacks")
+	}
+	hashmap := make(map[rune]int)
+	for index, sack := range sacks {
+		for _, letter := range sack {
+			if(index == len(sacks) - 1 && hashmap[letter] == 2){
+				return string(letter)
+			}
+			//only record the first instance of it per sack
+			if(hashmap[letter] == index){
+				hashmap[letter] +=1
+			}
+		}
+	}
+	//if we got here we didnt find a common badge
+	panic("whoops, no badge")
+}
+
+func findBadges(input string) (score int) {
+	sacks := strings.Split(input, "\n")
+	scorer := getPriority()
+	for index:=0; index+3 <= len(sacks); index+=3 {
+		score = scorer(findBadgeType(sacks[index:index+3]))
+	}
+	return
 }

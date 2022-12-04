@@ -28,3 +28,21 @@ func TestRummage(t *testing.T) {
 		t.Fatalf(`Input "%v" should return priority score %v but instead returned %v`, input, want, score);
     }
 }
+
+func TestFindDuplicateAmongstThree(t *testing.T) {
+	var input = []string{"vJrwpWtwJgWrhcsFMMfFFhFp","jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL","PmmdzqPrVvPwwTWBwg"}
+	want := "r"
+	badge := findBadgeType(input);
+	if want != badge {
+		t.Fatalf(`Input "%v" should return badge %q but instead returned %q`, input, want, badge);
+    }
+}
+
+func TestFindBadgeScore(t *testing.T) {
+	var input = "vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw"
+	want := 70
+	badgeScore := findBadges(input);
+	if want != badgeScore {
+		t.Fatalf(`Input "%v" should return badge %v but instead returned %v`, input, want, badgeScore);
+    }
+}
