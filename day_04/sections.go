@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	fmt.Println(countFullContainingSections(readInput()))
+	//part 1
+	// fmt.Println(countFullContainingSections(readInput()))
+	//part 2
+	fmt.Println(countOverlappingSections(readInput()))
 }
 type SectionRange struct{
 	lowerBound int
@@ -43,7 +46,17 @@ func countFullContainingSections(data string) int {
 		}
 	}
 	return count
-
+}
+func countOverlappingSections(data string) int {
+	var count int
+	pairs := strings.Split(data, "\n")
+	for _, pair := range pairs {
+		section1, section2 := getSectionRanges(pair)
+		if(section1.overlaps(section2)){
+			count+=1
+		}
+	}
+	return count
 }
 
 func getSectionRanges(pairString string) ( SectionRange,  SectionRange){
@@ -60,4 +73,16 @@ func getSectionRanges(pairString string) ( SectionRange,  SectionRange){
 
 func (outerSection SectionRange) contains(innerSection SectionRange) bool {
 	return outerSection.lowerBound <= innerSection.lowerBound && outerSection.upperBound >= innerSection.upperBound
+}
+
+func (outerSection SectionRange) overlaps(innerSection SectionRange) bool {
+	return outerSection.containsInt(innerSection.lowerBound) ||
+	outerSection.containsInt(innerSection.upperBound) ||
+	innerSection.containsInt(outerSection.lowerBound) ||
+	innerSection.containsInt(outerSection.upperBound)
+	
+}
+
+func (section SectionRange) containsInt(value int) bool {
+	return section.lowerBound <= value && section.upperBound >= value 
 }
