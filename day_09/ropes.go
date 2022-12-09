@@ -9,7 +9,8 @@ import (
 
 func main() {
 	//part 1, count the visible trees
-	fmt.Println(countVisits(moveRope(readInput(), buildRope(1000), Position{500,500}, 1)))
+	// fmt.Println(countVisits(moveRope(readInput(), buildRope(1000), Position{500,500}, 1)))
+	fmt.Println(countVisits(moveRope(readInput(), buildRope(1000), Position{500,500}, 9)))
 }
 
 func countVisits(rope [][]int) int {
@@ -25,10 +26,11 @@ func countVisits(rope [][]int) int {
 }
 
 func moveRope(input string,  rope [][]int, start Position, knots int) [][]int{
-	var head =start
-	rope[tail.y][tail.x]+=1//count the starting position
-	//create the slice of knot []Positions, all with start position
-	
+	var head, tails =start, make([]Position, knots)
+	for i, _ :=range tails {
+		tails[i] = start
+	}
+	rope[tails[0].y][tails[0].x]+=1//count the starting position	
 
 	moveStrings := strings.Split(input, "\n")
 	for _, moveString := range moveStrings {
@@ -39,7 +41,16 @@ func moveRope(input string,  rope [][]int, start Position, knots int) [][]int{
 			head = moveHead(move, head)
 			//TODO modify this to operate on a slice of tails, only moveCount=true on last element
 			//cascade, previous tail is new head
-			rope, head, tail = tailFollowsHead(rope, head, tail, true)
+			for index, tail := range tails{
+				moveCounts := index == len(tails) - 1 //the last tail only counts
+				if index == 0 {
+					rope, _, tails[index] = tailFollowsHead(rope, head, tail, moveCounts)
+				}else {
+					rope, _, tails[index] = tailFollowsHead(rope, tails[index-1], tail, moveCounts)
+
+				}
+
+			}
 		}
 	}
 	return rope

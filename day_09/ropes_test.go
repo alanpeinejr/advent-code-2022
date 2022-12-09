@@ -206,15 +206,8 @@ func TestTailCountsAllVisits(t *testing.T){
 		} 
 	}
 }
-func TestCountVisits(t *testing.T){
-	input := "R 4\nU 4\nL 3\nD 1\nR 4\nD 1\nL 5\nR 2"
-	rope:= [][]int{[]int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}}
-	want:= 13
-	actual:=countVisits(moveRope(input, rope, Position{0,4}, 1))
-	if want != actual {
-		t.Fatalf(`Given %v, got %v, but wanted %v`, input, actual, want)
-	}
-}
+
+
 func TestMoveRope(t *testing.T){
 	input := "R 4\nU 4\nL 3\nD 1\nR 4\nD 1\nL 5\nR 2"
 	rope:= [][]int{[]int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}}
@@ -222,3 +215,22 @@ func TestMoveRope(t *testing.T){
 	actual := moveRope(input, rope, Position{0,4}, 1)
 	fmt.Println(actual)
 }
+
+func TestCountVisitsTail9(t *testing.T){
+	input := "R 4\nU 4\nL 3\nD 1\nR 4\nD 1\nL 5\nR 2"
+	rope:= [][]int{[]int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}}
+	want:= 1
+	actual:=countVisits(moveRope(input, rope, Position{0,4}, 9))
+	if want != actual {
+		t.Fatalf(`Given %v, got %v, but wanted %v`, input, actual, want)
+	}
+}
+// func TestCountVisitsLastTail(t *testing.T){
+// 	input := "R 5\nU 8\nL 8\nD 3\nR 17\nD 10\nL 25\nU 20"
+// 	rope:= [][]int{[]int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}, []int{0,0,0,0,0,0}}
+// 	want:= 13
+// 	actual:=countVisits(moveRope(input, rope, Position{0,4}, 1))
+// 	if want != actual {
+// 		t.Fatalf(`Given %v, got %v, but wanted %v`, input, actual, want)
+// 	}
+// }
