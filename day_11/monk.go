@@ -12,7 +12,7 @@ func main() {
 }
 
 func calculateMonkeyBusiness(monkes []*Monke) int{
-	for i:=0; i < 20; i++ {//part 1 its 20, 2 its 10000
+	for i:=0; i < 10000; i++ {//part 1 its 20, 2 its 10000
 		for _, monke := range monkes {
 			returnToMonke(monke, monkes)
 		} 
@@ -24,7 +24,8 @@ func returnToMonke(monke *Monke, monkes []*Monke) {
 	monke.itemsInspected += len(monke.items)
 	for _, item := range monke.items {
 		worryAssessment := monke.operation(item)
-		worryAssessment = worryAssessment/3 //part 2 no longer reduces
+		// worryAssessment = worryAssessment / 3
+		worryAssessment = worryAssessment % 9699690		//(2*3*5*7*11*13*17*19)
 		var itemDestIndex int
 		if(monke.test(worryAssessment)) {
 			itemDestIndex = monke.positiveThrow
@@ -46,7 +47,7 @@ func monkeyBusiness(monkes []*Monke) int {
 		case first < monkeyBusiness:
 			second = first
 			first = monkeyBusiness
-		case second > monkeyBusiness:
+		case second < monkeyBusiness:
 			second = monkeyBusiness
 		default:
 			//do nothings
