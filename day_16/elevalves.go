@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/RyanCarrier/dijkstra"
-	// "github.com/ernestosuarez/itertools"
+	"github.com/ernestosuarez/itertools"
 )
 
 func main() {
@@ -21,10 +21,50 @@ func main() {
 		}
 	}
 	//part 1
-	finalPressure := goToNextBest(rooms, paths, "AA", 30, 0, 0, 0, roomsRemaining)
-	fmt.Println(finalPressure)
+	// finalPressure := goToNextBest(rooms, paths, "AA", 30, 0, 0, 0, roomsRemaining)
 	//part 2
+	finalPressure := tooFatTooFurious(rooms, paths, 26, roomsRemaining)
+
+	fmt.Println(finalPressure)
+
+
+
+
 }
+//im not sure if my surface can brute force this...
+func tooFatTooFurious(rooms map[string]*Room, paths map[string]map[string]int, time int, closedValves []string) int{
+	//max, we only have to go to half the *closed* (non zero) rooms, because the elephants will get the rest
+	finalPressure := 0
+
+	for i:= 1; i < len(closedValves)/2; i++ {
+		for pathComb := range itertools.CombinationsStr(closedValves, i) {//every combination of length i for the rooms
+			finalPressureMe := goToNextBest(rooms, paths, "AA", time, 0, 0, 0, pathComb)
+			//so if we go to i length rooms, the elephant goes to all the other ones
+			finalPressureElephant := goToNextBest(rooms, paths, "AA", time, 0, 0, 0, exclude(pathComb, closedValves))
+			if finalPressureMe + finalPressureElephant > finalPressure {
+				finalPressure = finalPressureMe + finalPressureElephant
+			}
+
+		}
+	}
+	return finalPressure
+}
+
+func exclude(this []string, from []string) []string{
+	new := []string{}
+	outer:
+		for _, i := range from {
+			for _, j := range this {
+				if i == j {
+					//i is in the excluded array, dont put it in
+					continue outer
+				}
+			}
+			new = append(new, i)
+		}
+	return new
+}
+
 
 func goToNextBest(rooms map[string]*Room, shortestPaths map[string]map[string]int, position string, timeLimit int, timePassed int, atTimePressure int, flowRate int, closedValves []string) int {
 	currentScore := atTimePressure + (flowRate * (timeLimit - timePassed))
@@ -82,6 +122,7 @@ func getAllShortestPaths(rooms map[string]*Room) (shortestPaths map[string]map[s
 	//calculate the shortest path from every node, to every other node
 	for nameA, roomA := range rooms {
 		shortestPaths[nameA] = map[string]int{}
+		fmt.Println(nameA)
 		for nameB, roomB := range rooms {
 			shortestpath, _ := graph.Shortest(roomA.Id, roomB.Id)
 			shortestPaths[nameA][nameB] = int(shortestpath.Distance)
@@ -96,6 +137,8 @@ func parseLines(input string) (rooms map[string]*Room) {
 	input = strings.ReplaceAll(input, "Valve ", "")
 	input = strings.ReplaceAll(input, " has flow rate", "")
 	input = strings.ReplaceAll(input, " tunnels lead to valves ", "")
+	input = strings.ReplaceAll(input, " tunnel leads to valve ", "")//why did they do two versions?
+
 	//AA=0;AB,AC\n
 	lines := strings.Split(input, "\n")
 	rooms = map[string]*Room{}
@@ -107,7 +150,7 @@ func parseLines(input string) (rooms map[string]*Room) {
 		roomAndFlow := strings.Split(roomAndFlowString, "=")
 		roomName := roomAndFlow[0]
 		flow := roomAndFlow[1]
-		connections:= strings.Split(connectionsString, ",")
+		connections:= strings.Split(connectionsString, ", ")
 
 
 		//if we haven't seen the room yet
