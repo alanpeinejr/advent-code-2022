@@ -51,8 +51,10 @@ func unmix(number *Node, l int) {
 	number.prev.next = number.next
 	number.next.prev = number.prev
 
-	//put in place
+	//go fwd/back
 	temp = move(temp, number.value%(l-1))//because we've exluded temp
+
+	//put in place
 	number.prev = temp
 	number.next = temp.next
 	number.prev.next = number
