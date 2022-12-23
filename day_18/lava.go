@@ -139,32 +139,32 @@ func bfsHole(origin Position, blob [][][]int) (bool, []Position) {
 		queue = queue[1:]
 		//add this children if they aren't explored, if we hit a border, cant be a hole
 		child := Position{current.x + 1, current.y, current.z}
-		if !isWithin(child, explored)  && child.x  < int(len(blob)) && blob[child.x][child.y][child.z] != 1 {
+		if !isWithin(child, explored)  && blob[child.x][child.y][child.z] != 1 {
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
 		child = Position{current.x - 1, current.y, current.z}
-		if !isWithin(child, explored) && child.x > 0 && blob[child.x][child.y][child.z] != 1 {
+		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1 {
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
 		child = Position{current.x, current.y + 1, current.z}
-		if !isWithin(child, explored) && child.y < int(len(blob[child.x]))&& blob[child.x][child.y][child.z] != 1{
+		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
 		child = Position{current.x, current.y - 1, current.z}
-		if !isWithin(child, explored) && child.y >  0 && blob[child.x][child.y][child.z] != 1{
+		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
 		child = Position{current.x, current.y, current.z+1}
-		if !isWithin(child, explored) &&  child.z < int(len(blob[child.x][child.y])) && blob[child.x][child.y][child.z] != 1{
+		if !isWithin(child, explored)  && blob[child.x][child.y][child.z] != 1{
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
 		child = Position{current.x, current.y, current.z-1}
-		if !isWithin(child, explored) && child.z > 0 && blob[child.x][child.y][child.z] != 1{
+		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
 			queue = append(queue, child)
 			explored = append(explored, child)
 		}
@@ -187,6 +187,7 @@ func foundBorder(position Position, blob [][][]int) bool{
 
 	return false
 }
+
 func makePocket(xmin int, xmax int, ymin int, ymax int, zmin int, zmax int) []Position {
 	position := []Position{}
 	for x:=xmin+1; x < xmax; x++ {
