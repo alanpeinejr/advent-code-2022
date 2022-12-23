@@ -138,36 +138,14 @@ func bfsHole(origin Position, blob [][][]int) (bool, []Position) {
 		}
 		queue = queue[1:]
 		//add this children if they aren't explored, if we hit a border, cant be a hole
-		child := Position{current.x + 1, current.y, current.z}
-		if !isWithin(child, explored)  && blob[child.x][child.y][child.z] != 1 {
-			queue = append(queue, child)
-			explored = append(explored, child)
+		for _, neighborIndex := range Neighbors {
+			child := current.add(neighborIndex)
+			if !isWithin(child, explored)  && blob[child.x][child.y][child.z] != 1 {
+				queue = append(queue, child)
+				explored = append(explored, child)
+			}
 		}
-		child = Position{current.x - 1, current.y, current.z}
-		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1 {
-			queue = append(queue, child)
-			explored = append(explored, child)
-		}
-		child = Position{current.x, current.y + 1, current.z}
-		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
-			queue = append(queue, child)
-			explored = append(explored, child)
-		}
-		child = Position{current.x, current.y - 1, current.z}
-		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
-			queue = append(queue, child)
-			explored = append(explored, child)
-		}
-		child = Position{current.x, current.y, current.z+1}
-		if !isWithin(child, explored)  && blob[child.x][child.y][child.z] != 1{
-			queue = append(queue, child)
-			explored = append(explored, child)
-		}
-		child = Position{current.x, current.y, current.z-1}
-		if !isWithin(child, explored) && blob[child.x][child.y][child.z] != 1{
-			queue = append(queue, child)
-			explored = append(explored, child)
-		}
+		
 	}
 	//how many hole spots we found
 	return true, explored
@@ -204,24 +182,16 @@ func makePocket(xmin int, xmax int, ymin int, ymax int, zmin int, zmax int) []Po
 }
 func countSides(blob [][][]int, positions []Position) (sides int) {
 	for _, position := range positions {
-		if(blob[position.x+1][position.y][position.z] != 1) {
-			sides+=1
-		}	
-		if(position.x ==0 || blob[position.x-1][position.y][position.z] != 1) {
-			sides+=1
+		for _, neighborIndex := range Neighbors {
+			neighbor := position.add(neighborIndex)
+			//we cant be longer here because of the padding of the dimension maxes
+			//but we could have gone less than zero
+			if(neighbor.HasNegativeIndex() || blob[neighbor.x][neighbor.y][neighbor.z] != 1) {
+				sides+=1
+			
+			}
 		}
-		if(blob[position.x][position.y+1][position.z] != 1) {
-			sides+=1
-		}	
-		if(position.y == 0 || blob[position.x][position.y-1][position.z] != 1) {
-			sides+=1
-		}	
-		if(blob[position.x][position.y][position.z+1] != 1) {
-			sides+=1
-		}	
-		if(position.z == 0 || blob[position.x][position.y][position.z-1] != 1) {
-			sides+=1
-		}	
+		
 	}
 
 	return 
@@ -234,6 +204,25 @@ type (
 		z int
 	}
 )
+
+var Neighbors = [...]Position{
+	Position{1,0,0},
+	Position{-1,0,0},
+	Position{0,1,0},
+	Position{0,-1,0},
+	Position{0,0,1},
+	Position{0,0,-1},
+}
+
+func (this Position) add(that Position) Position {
+	return Position{this.x+that.x, this.y+that.y, this.z+that.z}
+}
+
+func (this Position) HasNegativeIndex() bool {
+	return this.x * this.y * this.z < 0
+}
+
+
 //common helpers I'm copying because I haven't gotten around to fixing the local import problem
 func stringToint(this string) int {
 	value, _ := strconv.Atoi(this)
